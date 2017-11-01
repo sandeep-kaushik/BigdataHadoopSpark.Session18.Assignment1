@@ -1,0 +1,52 @@
+LOAD FILE )--
+
+val travelSet = sc.textFile("/home/acadgild/Desktop/18.1/S18_Dataset_Holidays.txt")
+var travelTuples  =  travelSet.map(x=> {
+                          val row = x.split(",").toList
+                          (row.apply(0).toInt, row.apply(1), row.apply(2), row.apply(3), row.apply(4).toInt, row.apply(5).toInt)
+                         })
+
+-------------------------------------------------------------------------
+task-1)
+-- What is the distribution of the total number of air-travelers per year
+
+
+val travelPerYr = travelTuples.map(x=>(x._6,1)).groupByKey().map(x => (x._1,(x._2.sum)))
+
+
+-------------------------------------------------------------------------
+
+task-2)
+--What is the total air distance covered by each user per year
+
+
+val groupDistance = travelTuples.map(x => ((x._1 , x._6) ,x._5)).groupByKey()
+val totalDistance = groupDistance.map(x=> (x._1,x._2.sum)).sortBy(x => -x._2)
+totalDistance.foreach(println)
+
+
+-------------------------------------------------------------------------
+
+
+task-3)
+-- Which user has travelled the largest distance till date
+
+
+val usrDest = totalDistance.map(x=> (x._1._1 ,x._2)).groupByKey.map(x => (x._1,x._2.sum))
+val usrLargestDest = usrDest.take(1)
+
+
+-------------------------------------------------------------------------
+
+task-4)
+-- What is the most preferred destination for all users.
+
+
+val PreferedLoc = travelTuples.map( x=> (x._3,1)).groupByKey().map(x =>( x._1 ,x._2.sum))
+val mstPreferedLoc = PreferedLoc.take(1)
+
+
+
+
+
+-------------------------------------------------------------------------
